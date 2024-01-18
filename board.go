@@ -4,16 +4,20 @@ package main
 type Board struct {
 	pieces [6]BB //384 bits
 	colors [2]BB //128 bits
+	ep     uint8 // 8 bits
 }
 
 var brd Board
-var rowMask, colMask [8]BB
+
+func (brd *Board) Occupied() BB {
+	return brd.colors[WHITE] | brd.colors[BLACK]
+}
+
+func (brd *Board) Empty() BB {
+	return ^brd.Occupied()
+}
 
 func InitBoards() {
-	for i := 0; i < 8; i++ {
-		rowMask[i] = 255 << (i * 8)
-		colMask[i] = 0x0101010101010101 << i
-	}
 
 	brd.colors[WHITE] = rowMask[0] | rowMask[1]
 	brd.colors[BLACK] = rowMask[6] | rowMask[7]

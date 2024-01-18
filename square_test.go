@@ -6,7 +6,7 @@ import (
 
 func TestSqToCoord(t *testing.T) {
 	tests := []struct {
-		sq    Sq
+		sq    int
 		coord string
 	}{
 		{A1, "A1"},
@@ -26,7 +26,7 @@ func TestSqToCoord(t *testing.T) {
 func TestCoordToSq(t *testing.T) {
 	tests := []struct {
 		coord string
-		sq    Sq
+		sq    int
 	}{
 		{"A1", A1},
 		{"B1", B1},

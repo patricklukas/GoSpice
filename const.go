@@ -15,19 +15,20 @@ const (
 	BLACK     // 1
 )
 
+// Clockwise from North
 const (
-	NOWE = 7
-	NORT = 8
-	NOEA = 9
-	WEST = -1
-	EAST = 1
-	SOWE = -9
-	SOUT = -8
-	SOEA = -7
+	NO int = iota
+	NE     // 1
+	EA     // 2
+	SE     // 3
+	SO     // 4
+	SW     // 5
+	WE     // 6
+	NW     // 7
 )
 
 const (
-	A1 Sq = iota
+	A1 int = iota
 	B1
 	C1
 	D1
