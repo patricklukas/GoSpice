@@ -2,13 +2,18 @@ package main
 
 type Move uint32
 
-// Encode a move into 18 bits according to this scheme:
+// Encode a move into 21 bits according to this scheme:
 // Least Significant Bit First
 // b0-5: from square
 // b6-11: to square
 // b12-14: piece
 // b15-17: captured piece
-// b18-19: promote to piece
+// b18-20: promote to piece
+
+// Toy Example:
+// PromoteTo | CapturedPiece | Piece |   To   |   From
+//    010    |      001      |  000  | 111111 |  110110
+//   Queen	 |     Knight    |  Pawn |   H8   |    G7
 
 // extract lowest 6 bits encoding the from square
 func (m Move) From() int {
@@ -29,7 +34,7 @@ func (m Move) CapturedPiece() Piece {
 }
 
 func (m Move) PromoteTo() Piece {
-	return Piece(m>>18&3 + 1)
+	return Piece(m >> 18 & 7)
 }
 
 func (m Move) isCapture() bool {
@@ -41,5 +46,5 @@ func (m Move) isQuiet() bool {
 }
 
 func NewMove(from, to int, piece, capturedPiece, promoteToPiece Piece) Move {
-	return Move(from) | Move(to)<<6 | Move(piece)<<12 | Move(capturedPiece)<<15 | Move(promoteToPiece-1)<<18
+	return Move(from) | Move(to)<<6 | Move(piece)<<12 | Move(capturedPiece)<<15 | Move((promoteToPiece))<<18
 }

@@ -51,9 +51,16 @@ func TestNewMove(t *testing.T) {
 	}
 }
 
-func TestMovePromoteToPiece(t *testing.T) {
+func TestMovePromoteToQueen(t *testing.T) {
 	m := NewMove(1, 2, 3, 4, QUEEN)
 	if m.PromoteTo() != QUEEN {
 		t.Errorf("Expected PromoteToPiece() to be 4, got %d", m.PromoteTo())
+	}
+}
+
+func TestMovePromoteToKnight(t *testing.T) {
+	m := NewMove(1, 2, 3, 4, KNIGHT)
+	if m.PromoteTo() != KNIGHT {
+		t.Errorf("Expected PromoteToPiece() to be 1, got %d", m.PromoteTo())
 	}
 }
