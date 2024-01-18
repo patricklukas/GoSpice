@@ -2,28 +2,6 @@ package main
 
 import "fmt"
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}
-func min(a, b int) int {
-	if a > b {
-		return b
-	} else {
-		return a
-	}
-}
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	} else {
-		return x
-	}
-}
-
 func main() {
 
 	// bishopMoves := GenBishopLookups()
