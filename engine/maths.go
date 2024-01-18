@@ -36,6 +36,12 @@ func lsb(b BB) int {
 	return deBruijnLsbTable[((b&-b)*DEBRUIJN)>>58]
 }
 
+func popLsb(b *BB) int {
+	lsb := lsb(*b)
+	*b &= *b - 1
+	return lsb
+}
+
 func msb(b BB) int {
 	b |= b >> 1
 	b |= b >> 2
