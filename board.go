@@ -2,9 +2,12 @@ package main
 
 // Holding all relevant information about the board state
 type Board struct {
-	pieces [6]BB //384 bits
-	colors [2]BB //128 bits
-	ep     uint8 // 8 bits
+	pieces    [6]BB //384 bits
+	colors    [2]BB //128 bits
+	checkmask [2]BB // 64 bits
+	pinmask   [2]BB // 64 bits
+	ep        BB    // 64 bits
+	turn      uint8 // 8 bits
 }
 
 var brd Board
@@ -15,6 +18,10 @@ func (brd *Board) Occupied() BB {
 
 func (brd *Board) Empty() BB {
 	return ^brd.Occupied()
+}
+
+func (brd *Board) EnemyOrEmpty() BB {
+	return ^brd.colors[brd.turn]
 }
 
 func InitBoards() {
