@@ -1,4 +1,4 @@
-package main
+package engine
 
 // Basic integer functions
 func max(a, b int) int {

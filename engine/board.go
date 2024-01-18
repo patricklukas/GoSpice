@@ -1,4 +1,4 @@
-package main
+package engine
 
 // Holding all relevant information about the board state
 type Board struct {

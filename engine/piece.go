@@ -1,3 +1,3 @@
-package main
+package engine
 
 type Piece uint8

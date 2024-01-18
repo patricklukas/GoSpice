@@ -1,7 +1,7 @@
 // Some ideas taken and adapted from https://github.com/stephenjlovell/gopher_check/blob/master/bitboard_setup.go
 // Thank you Stephen Lovell!
 
-package main
+package engine
 
 var pawnOffsets = [2][2]int{{8, 16}, {-8, -16}}
 var pawnAttackOffsets = [2][2]int{{7, 9}, {-7, -9}}
