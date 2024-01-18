@@ -95,8 +95,7 @@ func setupKingMasks() {
 
 func setupPawnMasks() {
 	for side := 0; side < 2; side++ {
-		// exclude first and last rank
-		// no pawns can exist there
+		// exclude first and last rank as no pawns can exist there
 		for i := 8; i < 56; i++ {
 			sq := i + pawnOffsets[side][0]
 			if onBoard(sq) && manhattanDistance(i, sq) == 1 {
