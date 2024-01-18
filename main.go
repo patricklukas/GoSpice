@@ -34,7 +34,7 @@ func main() {
 	// Shift(FromSq(63), SE).Print()
 	setupMasks()
 	for i := 0; i < 64; i++ {
-		kingMasks[i].Print()
+		pawnAttackMasks[WHITE][i].Print()
 		fmt.Println()
 	}
 

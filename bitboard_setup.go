@@ -3,7 +3,7 @@
 
 package main
 
-var pawnOffsets = [2][4]int{{8, 16, 7, 9}, {-8, -16, -7, -9}}
+var pawnOffsets = [2][2]int{{8, 16}, {-8, -16}}
 var pawnAttackOffsets = [2][2]int{{7, 9}, {-7, -9}}
 var knightOffsets = [8]int{-17, -15, -10, -6, 6, 10, 15, 17}
 var bishopDirs = [4]int{NE, SE, SW, NW}
@@ -93,6 +93,31 @@ func setupKingMasks() {
 	}
 }
 
+func setupPawnMasks() {
+	for side := 0; side < 2; side++ {
+		// exclude first and last rank
+		// no pawns can exist there
+		for i := 8; i < 56; i++ {
+			sq := i + pawnOffsets[side][0]
+			if onBoard(sq) && manhattanDistance(i, sq) == 1 {
+				pawnMasks[side][i] |= sqMaskOn[sq]
+			}
+			// double push on starting rank
+			if FromSq(i)&rowMask[1+5*side] != 0 {
+				sq = i + pawnOffsets[side][1]
+				pawnMasks[side][i] |= sqMaskOn[sq]
+			}
+			// attacks
+			for _, offset := range pawnAttackOffsets[side] {
+				sq = i + offset
+				if onBoard(sq) && manhattanDistance(i, sq) == 2 {
+					pawnAttackMasks[side][i] |= sqMaskOn[sq]
+				}
+			}
+		}
+	}
+}
+
 func setupMasks() {
 	setupRowAndColMasks()
 	setupSquareMasks()
@@ -101,10 +126,5 @@ func setupMasks() {
 	setupRookMasks()
 	setupQueenMasks()
 	setupKingMasks()
+	setupPawnMasks()
 }
-
-// func setupBishopMasks() {
-// 	for i := 0; i < 64; i++ {
-
-// 	}
-// }
