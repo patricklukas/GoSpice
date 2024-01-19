@@ -1,6 +1,8 @@
 package engine
 
-// todo: castling
+// todo: does move need expansion?
+// todo: -> ep, castle
+// todo: alternative in visitor pattern style?
 
 func genEnemyAttacks(brd Board) {
 	attacks := BB(0)
@@ -86,7 +88,7 @@ func genKingMoves(brd Board) []Move {
 		to := popLsb(&quiet)
 		moveList = append(moveList, NewMoveQuiet(sq, to, KING))
 	}
-	// todo: castling
+	// castling
 	if brd.castleL[brd.turn] {
 		if castlingMasks[brd.turn][0]&brd.enemyAttacks|kingToRookMasks[brd.turn][0]&brd.empty() == 0 {
 			moveList = append(moveList, NewMoveQuiet(4+int(56*brd.turn), 2+int(56*brd.turn), KING))
