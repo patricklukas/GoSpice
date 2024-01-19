@@ -11,7 +11,6 @@ var rookDirs = [4]int{NO, EA, SO, WE}
 
 var dirs = [8]int{8, 9, 1, -7, -8, -9, -1, 7}
 
-var rowMask, colMask [8]BB
 var rayMasks [64][8]BB
 var sqMaskOn, sqMaskOff [64]BB
 var knightMasks, bishopMasks, rookMasks, queenMasks, kingMasks [64]BB
@@ -133,6 +132,10 @@ func setupMasks() {
 	setupPawnMasks()
 }
 
+func generateQueenAttacks(occ BB, sq int) BB {
+	return generateBishopAttacks(occ, sq) | generateRookAttacks(occ, sq)
+}
+
 func generateBishopAttacks(occ BB, sq int) BB {
 	return scanUp(occ, NW, sq) | scanUp(occ, NE, sq) | scanDown(occ, SE, sq) | scanDown(occ, SW, sq)
 }
@@ -157,4 +160,83 @@ func scanUp(occ BB, dir, sq int) BB {
 		ray ^= (rayMasks[dir][lsb(blockers)]) // chop off end of ray after first blocking piece.
 	}
 	return ray
+}
+
+func generateKingBishopRay(occ BB, sq int) BB {
+	return scanAttackUp(occ, NW, sq) | scanAttackUp(occ, NE, sq) | scanAttackDown(occ, SE, sq) | scanAttackDown(occ, SW, sq)
+}
+
+func generateKingRookRay(occ BB, sq int) BB {
+	return scanAttackUp(occ, NO, sq) | scanAttackUp(occ, EA, sq) | scanAttackDown(occ, SO, sq) | scanAttackDown(occ, WE, sq)
+}
+
+func generateKingQueenRay(occ BB, sq int) BB {
+	return generateKingBishopRay(occ, sq) | generateKingRookRay(occ, sq)
+}
+
+func scanAttackUp(occ BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	blockers := (ray & occ)
+	if blockers > 0 {
+		ray ^= (rayMasks[dir][lsb(blockers)]) // chop off end of ray after first blocking piece.
+		return ray
+	}
+	// return nothing if no blockers
+	return BB(0)
+}
+
+func scanAttackDown(occ BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	blockers := (ray & occ)
+	if blockers > 0 {
+		ray ^= (rayMasks[dir][msb(blockers)]) // chop off end of ray after first blocking piece.
+		return ray
+	}
+	// return nothing if no blockers
+	return BB(0)
+}
+
+// god this is ugly
+func scanXrayUp(allied, enemy BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	// first find first allied piece blocking kings vision
+	blockers := ray & allied
+	enemyPieces := ray & enemy
+	if blockers > 0 && enemyPieces > 0 {
+		// get its square
+		blocker := lsb(blockers)
+		// check its vision for enemy pieces without getting blocked by further allied pieces
+		if scanAttackUp(allied, dir, blocker) == 0 {
+			ray ^= rayMasks[dir][lsb(enemyPieces)]
+			return ray
+		}
+	}
+	// no pin
+	return BB(0)
+}
+
+func scanXrayDown(allied, enemy BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	// first find first allied piece blocking kings vision
+	blockers := ray & allied
+	enemyPieces := ray & enemy
+	if blockers > 0 && enemyPieces > 0 {
+		// get its square
+		blocker := msb(blockers)
+		// check its vision for enemy pieces without getting blocked by further allied pieces
+		if scanAttackDown(allied, dir, blocker) == 0 {
+			ray ^= rayMasks[dir][msb(enemyPieces)]
+			return ray
+		}
+	}
+	// no pin
+	return BB(0)
+}
+
+func genPinsDiag(allied, enemy BB, sq int) BB {
+	return scanXrayUp(allied, enemy, NW, sq) | scanXrayUp(allied, enemy, NE, sq) | scanXrayDown(allied, enemy, SE, sq) | scanXrayDown(allied, enemy, SW, sq)
+}
+
+func genPinsHV(allied, enemy BB, sq int) BB {
+	return scanXrayUp(allied, enemy, NO, sq) | scanXrayUp(allied, enemy, EA, sq) | scanXrayDown(allied, enemy, SO, sq) | scanXrayDown(allied, enemy, WE, sq)
 }
