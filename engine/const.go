@@ -11,9 +11,13 @@ const (
 )
 
 const (
-	WHITE int = iota
-	BLACK     // 1
+	WHITE uint8 = iota
+	BLACK       // 1
 )
+
+func flipColor(color uint8) uint8 {
+	return color ^ 1
+}
 
 // Clockwise from North
 const (

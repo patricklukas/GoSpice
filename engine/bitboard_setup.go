@@ -93,6 +93,11 @@ func setupKingMasks() {
 	}
 }
 
+// returns (left_attacks, right_attacks) separately
+func pawnAttacks(brd *Board, color int) (left, right BB) {
+	return ((brd.pieces[PAWN] & brd.colors[color] & (^colMask[0])) << 7), ((brd.pieces[PAWN] & brd.colors[color] & (^colMask[7])) << 9)
+}
+
 func setupPawnMasks() {
 	for side := 0; side < 2; side++ {
 		// exclude first and last rank as no pawns can exist there
@@ -126,4 +131,30 @@ func setupMasks() {
 	setupQueenMasks()
 	setupKingMasks()
 	setupPawnMasks()
+}
+
+func generateBishopAttacks(occ BB, sq int) BB {
+	return scanUp(occ, NW, sq) | scanUp(occ, NE, sq) | scanDown(occ, SE, sq) | scanDown(occ, SW, sq)
+}
+
+func generateRookAttacks(occ BB, sq int) BB {
+	return scanUp(occ, NO, sq) | scanUp(occ, EA, sq) | scanDown(occ, SO, sq) | scanDown(occ, WE, sq)
+}
+
+func scanDown(occ BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	blockers := (ray & occ)
+	if blockers > 0 {
+		ray ^= (rayMasks[dir][msb(blockers)]) // chop off end of ray after first blocking piece.
+	}
+	return ray
+}
+
+func scanUp(occ BB, dir, sq int) BB {
+	ray := rayMasks[dir][sq]
+	blockers := (ray & occ)
+	if blockers > 0 {
+		ray ^= (rayMasks[dir][lsb(blockers)]) // chop off end of ray after first blocking piece.
+	}
+	return ray
 }

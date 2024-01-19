@@ -48,3 +48,7 @@ func (m Move) isQuiet() bool {
 func NewMove(from, to int, piece, capturedPiece, promoteToPiece Piece) Move {
 	return Move(from) | Move(to)<<6 | Move(piece)<<12 | Move(capturedPiece)<<15 | Move((promoteToPiece))<<18
 }
+
+func NewMoveQuiet(from, to int, piece Piece) Move {
+	return NewMove(from, to, piece, EMPTY, EMPTY)
+}
